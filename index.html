@@ -326,17 +326,17 @@
     <script>
         // Country to offer URL mapping (using highest payout where multiple exist)
         const offerUrls = {
-            'IT': { url: 'https://cjdahag.gettopost.com/c/72f5cc35ffba7', payout: 4, flag: '🇮🇹' },
-            'ES': { url: 'https://cjdahag.gettopost.com/c/0d917d83cc8b3', payout: 3, flag: '🇪🇸' },
-            'FR': { url: 'https://cjdahag.trckoffer.com/c/864c0d5abf439', payout: 4, flag: '🇫🇷' },
-            'AU': { url: 'https://cjdahag.trckoffer.com/c/525601f705c5e', payout: 7, flag: '🇦🇺' },
-            'CA': { url: 'https://cjdahag.trckoffer.com/c/525601f705c5e', payout: 7, flag: '🇨🇦' },
-            'CH': { url: 'https://cjdahag.gettopost.com/c/1320abc6aa04e', payout: 3, flag: '🇨🇭' },
-            'DE': { url: 'https://cjdahag.gettopost.com/c/1320abc6aa04e', payout: 3, flag: '🇩🇪' },
-            'NZ': { url: 'https://cjdahag.trckoffer.com/c/525601f705c5e', payout: 7, flag: '🇳🇿' },
-            'UK': { url: 'https://cjdahag.gettopost.com/c/1320abc6aa04e', payout: 3, flag: '🇬🇧' },
-            'US': { url: 'https://cjdahag.trckoffer.com/c/525601f705c5e', payout: 7, flag: '🇺🇸' },
-            'IE': { url: 'https://cjdahag.trckoffer.com/c/525601f705c5e', payout: 7, flag: '🇮🇪' }
+            'IT': { url: 'https://cjdahag.gettopost.com/c/72f5cc35ffba7', flag: '🇮🇹' },
+            'ES': { url: 'https://cjdahag.gettopost.com/c/0d917d83cc8b3', flag: '🇪🇸' },
+            'FR': { url: 'https://cjdahag.trckoffer.com/c/864c0d5abf439', flag: '🇫🇷' },
+            'AU': { url: 'https://cjdahag.trckoffer.com/c/525601f705c5e', flag: '🇦🇺' },
+            'CA': { url: 'https://cjdahag.trckoffer.com/c/525601f705c5e', flag: '🇨🇦' },
+            'CH': { url: 'https://cjdahag.gettopost.com/c/1320abc6aa04e', flag: '🇨🇭' },
+            'DE': { url: 'https://cjdahag.gettopost.com/c/1320abc6aa04e', flag: '🇩🇪' },
+            'NZ': { url: 'https://cjdahag.trckoffer.com/c/525601f705c5e', flag: '🇳🇿' },
+            'UK': { url: 'https://cjdahag.gettopost.com/c/1320abc6aa04e', flag: '🇬🇧' },
+            'US': { url: 'https://cjdahag.trckoffer.com/c/525601f705c5e', flag: '🇺🇸' },
+            'IE': { url: 'https://cjdahag.trckoffer.com/c/525601f705c5e', flag: '🇮🇪' }
         };
         
         // Country to content mapping (translations)
@@ -383,8 +383,7 @@
                 .then(data => {
                     const countryCode = data.country;
                     currentOffer = offerUrls[countryCode] || { 
-                        url: 'https://cjdahag.pixls.one/p/Ve0JG', 
-                        payout: 3, 
+                        url: 'https://cjdahag.pixls.one/p/Ve0JG',
                         flag: '🌎' 
                     };
                     
@@ -394,8 +393,7 @@
                 .catch(error => {
                     console.error('Error detecting country:', error);
                     currentOffer = { 
-                        url: 'https://cjdahag.pixls.one/p/Ve0JG', 
-                        payout: 3, 
+                        url: 'https://cjdahag.pixls.one/p/Ve0JG',
                         flag: '🌎' 
                     };
                     updatePageContent('EN');
