@@ -433,33 +433,23 @@
         // Match Feed Functionality
         const CONFIG = {
             maleNames: [
-                // Original names
                 "James", "David", "Michael", "Daniel", "Matthew", "Christopher",
-                // Additional Canadian male names
                 "Liam", "Noah", "William", "Benjamin", "Lucas", "Henry", "Alexander", "Jacob", "Logan", "Ethan",
                 "Jackson", "Levi", "Sebastian", "Jack", "Owen", "Samuel", "Gabriel", "Caleb", "Ryan", "Nathan",
                 "Isaac", "Luke", "Dylan", "Mason", "Elijah", "Theodore", "Hudson", "Oliver", "Aiden", "Leo"
             ],
             femaleNames: [
-                // Original names
                 "Emma", "Olivia", "Sophia", "Ava", "Isabella", "Mia",
-                // Additional Canadian female names
                 "Charlotte", "Amelia", "Harper", "Evelyn", "Abigail", "Emily", "Elizabeth", "Sofia", "Avery", "Scarlett",
                 "Victoria", "Madison", "Luna", "Grace", "Chloe", "Penelope", "Layla", "Riley", "Zoey", "Nora",
                 "Lily", "Eleanor", "Hannah", "Stella", "Zoe", "Leah", "Savannah", "Audrey", "Claire", "Skylar"
             ],
             locations: [
-                // Original locations
                 "New York", "Chicago", "Los Angeles", "Miami", "Seattle", "Rome", "Milan", "Naples", "Madrid", "Barcelona", "Valencia", "Paris", "Marseille", "Lyon", "Sydney", "Darwin", "Brisbane",
-                // Additional Canada locations
                 "Toronto", "Vancouver", "Montreal", "Calgary", "Ottawa", "Edmonton", "Quebec City", "Winnipeg", "Halifax", "Victoria",
-                // Additional France locations
                 "Nice", "Toulouse", "Strasbourg", "Bordeaux", "Nantes",
-                // Additional Italy locations
                 "Venice", "Florence", "Turin", "Bologna", "Palermo",
-                // Additional Spain locations
                 "Seville", "Malaga", "Bilbao", "Granada", "Zaragoza",
-                // Additional New Zealand locations
                 "Auckland", "Wellington", "Christchurch", "Queenstown", "Dunedin"
             ],
             malePhotoApi: "https://xsgames.co/randomusers/avatar.php?g=male",
@@ -471,28 +461,11 @@
             maxInterval: 8000
         };
         
-        const photoCache = {
-            male: null,
-            female: null
-        };
-        
-        async function fetchUserPhoto(gender) {
-            try {
-                const apiUrl = gender === 'male' ? CONFIG.malePhotoApi : CONFIG.femalePhotoApi;
-                // Add random parameter to prevent caching
-                const response = await fetch(`${apiUrl}&random=${Math.random()}`);
-                // This API directly returns the image, so we can use the URL directly
-                return apiUrl;
-            } catch (error) {
-                console.log(`Using fallback ${gender} photo`);
-                return gender === 'male' ? CONFIG.fallbackMalePhoto : CONFIG.fallbackFemalePhoto;
-            }
-        }
-        
+        // No need for photoCache since we're using direct URLs
         async function getPhoto(gender) {
-            if (photoCache[gender]) return photoCache[gender];
-            photoCache[gender] = await fetchUserPhoto(gender);
-            return photoCache[gender];
+            const apiUrl = gender === 'male' ? CONFIG.malePhotoApi : CONFIG.femalePhotoApi;
+            // Add random query to prevent caching
+            return `${apiUrl}&random=${Math.random()}`;
         }
         
         async function createMatchNotification() {
@@ -533,8 +506,6 @@
             feed.innerHTML = notificationHTML;
             
             setTimeout(() => {
-                photoCache.male = null;
-                photoCache.female = null;
                 feed.innerHTML = '';
             }, CONFIG.displayDuration);
         }
@@ -549,11 +520,10 @@
             };
             
             setTimeout(showNextMatch, CONFIG.maxInterval);
-            
-            // Pre-cache photos
-            getPhoto('male');
-            getPhoto('female');
         }
+        
+        // Initialize the match feed
+        initMatchFeed();
 
         // Update user counter
         function updateUserCounter() {
