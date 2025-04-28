@@ -432,50 +432,80 @@
 
         // Match Feed Functionality
         const CONFIG = {
-            maleNames: ["James", "David", "Michael", "Daniel", "Matthew", "Christopher"],
-            femaleNames: ["Emma", "Olivia", "Sophia", "Ava", "Isabella", "Mia"],
-            locations: ["New York", "Chicago", "Los Angeles", "Miami", "Seattle", "Rome", "Milan", "Naples", "Madrid", "Barcelona", "Valencia", "Paris", "Marseille", "Lyon", "Sydney", "Darwin", "Brisbane"],
-            apiEndpoint: "https://randomuser.me/api/",
+            maleNames: [
+                // Original names
+                "James", "David", "Michael", "Daniel", "Matthew", "Christopher",
+                // Additional Canadian male names
+                "Liam", "Noah", "William", "Benjamin", "Lucas", "Henry", "Alexander", "Jacob", "Logan", "Ethan",
+                "Jackson", "Levi", "Sebastian", "Jack", "Owen", "Samuel", "Gabriel", "Caleb", "Ryan", "Nathan",
+                "Isaac", "Luke", "Dylan", "Mason", "Elijah", "Theodore", "Hudson", "Oliver", "Aiden", "Leo"
+            ],
+            femaleNames: [
+                // Original names
+                "Emma", "Olivia", "Sophia", "Ava", "Isabella", "Mia",
+                // Additional Canadian female names
+                "Charlotte", "Amelia", "Harper", "Evelyn", "Abigail", "Emily", "Elizabeth", "Sofia", "Avery", "Scarlett",
+                "Victoria", "Madison", "Luna", "Grace", "Chloe", "Penelope", "Layla", "Riley", "Zoey", "Nora",
+                "Lily", "Eleanor", "Hannah", "Stella", "Zoe", "Leah", "Savannah", "Audrey", "Claire", "Skylar"
+            ],
+            locations: [
+                // Original locations
+                "New York", "Chicago", "Los Angeles", "Miami", "Seattle", "Rome", "Milan", "Naples", "Madrid", "Barcelona", "Valencia", "Paris", "Marseille", "Lyon", "Sydney", "Darwin", "Brisbane",
+                // Additional Canada locations
+                "Toronto", "Vancouver", "Montreal", "Calgary", "Ottawa", "Edmonton", "Quebec City", "Winnipeg", "Halifax", "Victoria",
+                // Additional France locations
+                "Nice", "Toulouse", "Strasbourg", "Bordeaux", "Nantes",
+                // Additional Italy locations
+                "Venice", "Florence", "Turin", "Bologna", "Palermo",
+                // Additional Spain locations
+                "Seville", "Malaga", "Bilbao", "Granada", "Zaragoza",
+                // Additional New Zealand locations
+                "Auckland", "Wellington", "Christchurch", "Queenstown", "Dunedin"
+            ],
+            malePhotoApi: "https://xsgames.co/randomusers/avatar.php?g=male",
+            femalePhotoApi: "https://xsgames.co/randomusers/avatar.php?g=female",
             fallbackMalePhoto: "https://i.imgur.com/mW3KEQa.jpg",
             fallbackFemalePhoto: "https://i.imgur.com/Jf6eYbE.jpg",
             displayDuration: 5000,
             minInterval: 5000,
             maxInterval: 8000
         };
-
+        
         const photoCache = {
             male: null,
             female: null
         };
-
+        
         async function fetchUserPhoto(gender) {
             try {
-                const response = await fetch(`${CONFIG.apiEndpoint}?gender=${gender}&inc=picture&noinfo`);
-                const data = await response.json();
-                return data.results[0].picture.medium;
+                const apiUrl = gender === 'male' ? CONFIG.malePhotoApi : CONFIG.femalePhotoApi;
+                // Add random parameter to prevent caching
+                const response = await fetch(`${apiUrl}&random=${Math.random()}`);
+                // This API directly returns the image, so we can use the URL directly
+                return apiUrl;
             } catch (error) {
                 console.log(`Using fallback ${gender} photo`);
                 return gender === 'male' ? CONFIG.fallbackMalePhoto : CONFIG.fallbackFemalePhoto;
             }
         }
-
+        
         async function getPhoto(gender) {
             if (photoCache[gender]) return photoCache[gender];
             photoCache[gender] = await fetchUserPhoto(gender);
             return photoCache[gender];
         }
-
+        
         async function createMatchNotification() {
             const maleFirst = Math.random() > 0.5;
             const maleName = CONFIG.maleNames[Math.floor(Math.random() * CONFIG.maleNames.length)];
             const femaleName = CONFIG.femaleNames[Math.floor(Math.random() * CONFIG.femaleNames.length)];
             const location = CONFIG.locations[Math.floor(Math.random() * CONFIG.locations.length)];
-
+        
             const [malePhoto, femalePhoto] = await Promise.all([
                 getPhoto('male'),
                 getPhoto('female')
             ]);
-
+        
             return `
                 <div class="match-notification">
                     <div class="match-avatars">
@@ -495,7 +525,7 @@
                 </div>
             `;
         }
-
+        
         async function showNewMatch() {
             const feed = document.querySelector('.mini-match-feed');
             const notificationHTML = await createMatchNotification();
@@ -508,7 +538,7 @@
                 feed.innerHTML = '';
             }, CONFIG.displayDuration);
         }
-
+        
         function initMatchFeed() {
             setTimeout(showNewMatch, 1000);
             
@@ -520,6 +550,7 @@
             
             setTimeout(showNextMatch, CONFIG.maxInterval);
             
+            // Pre-cache photos
             getPhoto('male');
             getPhoto('female');
         }
